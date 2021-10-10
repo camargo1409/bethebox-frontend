@@ -1,4 +1,5 @@
 import { Flex, Heading } from "@chakra-ui/layout";
+import Link from "next/link";
 
 export const SimpleHeader = () => {
   return (
@@ -12,7 +13,9 @@ export const SimpleHeader = () => {
       align="center"
     >
       <Heading as="h1" size="xl" color="gray.300">
-        bethebox
+        <Link href="/">
+          <a>bethebox</a>
+        </Link>
       </Heading>
     </Flex>
   );
