@@ -45,7 +45,7 @@ const Home: NextPage = () => {
               Não se preocupe mais em receber suas entregas
             </Heading>
             <Text color="gray.500">Encontre a caixa postal mais próxima</Text>
-            <NextLink href="/dashboard" passHref>
+            <NextLink href="/auth/signin" passHref>
               <Button as="a" size="md" colorScheme="pink" mt="6">
                 Comece já
               </Button>
