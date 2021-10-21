@@ -13,7 +13,14 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { signUpFormSchema } from "./schema";
 import { api } from "../../config/axios";
 import { toast } from "react-toastify";
-import { useEffect } from "react";
+import { useContext, useEffect } from "react";
+import dynamic from "next/dynamic";
+
+const Map = dynamic<any>(() => import("../Map").then((mod) => mod.Map), {
+  ssr: false,
+});
+
+import { MapContext, MapProvider } from "../../contexts/MapContenxt";
 
 interface SignUpFormData {
   first_name: string;
@@ -32,16 +39,20 @@ export const SignUpForm = () => {
     resolver: yupResolver(signUpFormSchema),
   });
 
+  const { position } = useContext(MapContext);
+  console.log(position);
+
   const handleSignUp: SubmitHandler<SignUpFormData> = async (values) => {
     try {
-      const { confirm_password, ...data } = values;
+      const { confirm_password, ...rest } = values;
 
-      const response = await api.post("/users", {
-        ...data,
-        lat: -20.8712273,
-        long: -49.4186457,
+      const { data } = await api.post("/users", {
+        ...rest,
+        lat: position.lat,
+        long: position.lng,
       });
-      console.log(response);
+
+      toast("Usuário criado com sucesso!")
     } catch (error: any) {
       console.log(error.response);
       toast(`${error.response.status} - ${error.response.data.msg}`);
@@ -163,7 +174,9 @@ export const SignUpForm = () => {
           </FormControl>
         </HStack>
 
-        <Box height={300} w="100%" bg="gray.200" mt={8}></Box>
+        <Box height={300} w="100%" bg="gray.200" mt={8}>
+          <Map />
+        </Box>
       </FormControl>
 
       <FormControl display="flex">
