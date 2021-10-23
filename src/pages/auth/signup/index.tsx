@@ -14,9 +14,7 @@ const SignUp = () => {
       <Flex direction="column">
         <SimpleHeader />
         <Container my={8}>
-          <MapProvider>
             <SignUpForm />
-          </MapProvider>
         </Container>
       </Flex>
     </>

@@ -20,9 +20,17 @@ interface AuthProviderProps {
 }
 
 interface User {
-  email: string;
   first_name: string;
   last_name: string;
+  email: string;
+  cpf: string;
+  confirm_password: string;
+  address: string;
+  state: string;
+  city: string;
+  available: boolean;
+  lat: number;
+  long: number;
 }
 
 export const AuthContext = createContext({} as AuthContextData);
@@ -37,9 +45,9 @@ export function AuthProvider({ children }: AuthProviderProps) {
       api
         .get("/me")
         .then((response) => {
-          const { email, first_name, last_name } = response.data;
+          const user = response.data;
 
-          setUser({ email, first_name, last_name });
+          setUser(user);
         })
         .catch((error) => {
           toast(`${error}`);
@@ -56,18 +64,12 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
       const { token, user } = data;
 
-      const { first_name, last_name } = user;
-
       setCookie(undefined, "bethebox.token", token, {
         maxAge: 60 * 60 * 24 * 30, // 30 days
         path: "/",
       });
 
-      setUser({
-        email,
-        first_name,
-        last_name,
-      });
+      setUser(user);
 
       if (api?.defaults?.headers) {
         api.defaults.headers["Authorization"] = `Bearer ${token}`;
