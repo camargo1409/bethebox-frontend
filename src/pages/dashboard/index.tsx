@@ -6,6 +6,7 @@ import { FaUserAlt } from "react-icons/fa";
 import { MdOutlineDashboard } from "react-icons/md";
 import { RiMapPin5Line } from "react-icons/ri";
 import { Sidebar } from "../../components/Sidebar";
+import UserInfo from "../../components/UserInfo";
 import { AuthContext } from "../../contexts/AuthContext";
 import { DashboardLayout } from "../../layouts/dashboardLayout";
 
@@ -16,7 +17,7 @@ const Dashboard = () => {
       <Grid flex="1"
         bg="gray.50"
         templateRows="repeat(1, 1fr)"
-        templateColumns="1fr 2fr"
+        templateColumns="1fr 5fr"
       >
         <GridItem 
         display="flex" 
@@ -25,23 +26,20 @@ const Dashboard = () => {
         justifyContent="right" 
         pr="10"
         >
-          <List spacing={3}>
-              <ListItem _hover={{bg: "gray"}}>
-                aaaaaaaa
+          <List spacing={2} mt="5" color="gray.50" px="2">
+              <ListItem _hover={{bg: "blue.700"}}>
+                <a href="">Minha conta</a>
               </ListItem>
               <ListItem>
-                <a href="">Dashboard</a>
+                <a href="">Estatisticas</a>
               </ListItem>
               <ListItem>
-                <a href="">Mapa</a>
-              </ListItem>
-              <ListItem>
-                <a href="">Configurações</a>
+                <a href="">Sair</a>
               </ListItem>
             </List>
         </GridItem>
-        <GridItem h="100%" bg="gray.50">
-
+        <GridItem h="100%" w="100%" bg="gray.50">
+          <UserInfo />
         </GridItem>
       </Grid>
     </DashboardLayout>
