@@ -1,9 +1,14 @@
 import { useContext } from "react";
-import { MapContainer, TileLayer } from "react-leaflet";
+import { MapContainer, Marker, TileLayer } from "react-leaflet";
 import { MapContext } from "../../contexts/MapContenxt";
 import { DraggableMarker } from "../DraggableMarker";
 import styles from "./index.module.css";
-export const Map = () => {
+
+export interface MapProps {
+  isDraggable?: boolean;
+}
+
+export const Map = ({ isDraggable = true }: MapProps) => {
   const { position } = useContext(MapContext);
 
   return (
@@ -18,7 +23,11 @@ export const Map = () => {
           attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
-        <DraggableMarker initialPosition={position} />
+        {isDraggable ? (
+          <DraggableMarker initialPosition={position} />
+        ):(
+          <Marker position={position}/>
+        )}
       </MapContainer>
     </>
   );

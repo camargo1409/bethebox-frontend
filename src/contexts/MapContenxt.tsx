@@ -24,6 +24,9 @@ export const MapProvider = ({ children }: MapProviderProps) => {
     setPosition(position);
   };
 
+  console.log(position);
+  
+
   return (
     <>
       {position && (

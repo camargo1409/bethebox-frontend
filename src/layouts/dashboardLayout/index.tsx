@@ -43,7 +43,7 @@ export const DashboardLayout = ({ children }: DashboardLayoutProps) => {
                 <a href=""><Icon as={MdOutlineDashboard} mr="3"/>Dashboard</a>
               </ListItem>
               <ListItem>
-                <a href=""><Icon as={RiMapPin5Line} mr="3"/>Mapa</a>
+                <a href="/map"><Icon as={RiMapPin5Line} mr="3"/>Mapa</a>
               </ListItem>
               <ListItem>
                 <a href=""><Icon as={BsGear} mr="3"/>Configurações</a>
