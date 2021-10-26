@@ -30,11 +30,26 @@ interface SignUpFormData {
   password: string;
   confirm_password: string;
   address: string;
+  state: string;
   city: string;
   available: boolean;
 }
 
-export const SignUpForm = () => {
+interface SignUpFormProps{
+  labelColor?: string;
+  fillForm?: {
+    first_name: string;
+    last_name: string;
+    email: string;
+    cpf: string;
+    address: string;
+    state: string;
+    city: string;
+    available: boolean;
+  }
+}
+
+export const SignUpForm = ({labelColor, fillForm}:SignUpFormProps) => {
   const { register, handleSubmit, formState } = useForm({
     resolver: yupResolver(signUpFormSchema),
   });
@@ -70,14 +85,15 @@ export const SignUpForm = () => {
   return (
     <VStack as="form" spacing="20" onSubmit={handleSubmit(handleSignUp)}>
       <FormControl as="fieldset">
-        <FormLabel fontSize="larger" fontWeight="bold" as="legend">
+        <FormLabel color={labelColor} fontSize="larger" fontWeight="bold" as="legend">
           Informações básicas
         </FormLabel>
 
         <HStack>
           <FormControl>
-            <FormLabel htmlFor="first_name">Primeiro nome</FormLabel>
-            <Input
+            <FormLabel color={labelColor} htmlFor="first_name">Primeiro nome</FormLabel>
+            <Input color={labelColor}
+              value={fillForm?.first_name}
               id="first_name"
               variant="flushed"
               type="text"
@@ -86,8 +102,9 @@ export const SignUpForm = () => {
             />
           </FormControl>
           <FormControl>
-            <FormLabel htmlFor="last_name">Sobrenome</FormLabel>
-            <Input
+            <FormLabel color={labelColor} htmlFor="last_name">Sobrenome</FormLabel>
+            <Input color={labelColor}
+              value={fillForm?.last_name}
               id="last_name"
               variant="flushed"
               type="text"
@@ -98,8 +115,9 @@ export const SignUpForm = () => {
 
         <HStack mt={8}>
           <FormControl>
-            <FormLabel htmlFor="email">Email</FormLabel>
-            <Input
+            <FormLabel color={labelColor} htmlFor="email">Email</FormLabel>
+            <Input color={labelColor}
+              value={fillForm?.email}
               id="email"
               variant="flushed"
               type="email"
@@ -107,8 +125,9 @@ export const SignUpForm = () => {
             />
           </FormControl>
           <FormControl>
-            <FormLabel htmlFor="cpf">CPF</FormLabel>
-            <Input
+            <FormLabel color={labelColor} htmlFor="cpf">CPF</FormLabel>
+            <Input color={labelColor}
+              value={fillForm?.cpf}
               id="cpf"
               variant="flushed"
               type="text"
@@ -119,8 +138,9 @@ export const SignUpForm = () => {
 
         <HStack mt={8}>
           <FormControl>
-            <FormLabel htmlFor="password">Senha</FormLabel>
-            <Input
+            <FormLabel color={labelColor} htmlFor="password">Senha</FormLabel>
+            <Input color={labelColor}
+              placeholder={!!fillForm ? '********' : ''}
               id="password"
               variant="flushed"
               type="password"
@@ -128,8 +148,9 @@ export const SignUpForm = () => {
             />
           </FormControl>
           <FormControl>
-            <FormLabel htmlFor="confirm_password">Confirmar senha</FormLabel>
-            <Input
+            <FormLabel color={labelColor} htmlFor="confirm_password">Confirmar senha</FormLabel>
+            <Input color={labelColor}
+              placeholder={!!fillForm ? '********' : ''}
               id="confirm_password"
               variant="flushed"
               type="password"
@@ -140,13 +161,14 @@ export const SignUpForm = () => {
       </FormControl>
 
       <FormControl as="fieldset">
-        <FormLabel fontSize="larger" fontWeight="bold" as="legend">
+        <FormLabel color={labelColor} fontSize="larger" fontWeight="bold" as="legend">
           Localização
         </FormLabel>
 
         <FormControl>
-          <FormLabel htmlFor="address">Endereço</FormLabel>
-          <Input
+          <FormLabel color={labelColor} htmlFor="address">Endereço</FormLabel>
+          <Input color={labelColor}
+            value={fillForm?.address}
             id="address"
             variant="flushed"
             type="text"
@@ -155,8 +177,9 @@ export const SignUpForm = () => {
         </FormControl>
         <HStack mt={8}>
           <FormControl>
-            <FormLabel htmlFor="city">Cidade</FormLabel>
-            <Input
+            <FormLabel color={labelColor} htmlFor="city">Cidade</FormLabel>
+            <Input color={labelColor}
+              value={fillForm?.city}
               id="city"
               variant="flushed"
               type="text"
@@ -164,8 +187,9 @@ export const SignUpForm = () => {
             />
           </FormControl>
           <FormControl>
-            <FormLabel htmlFor="state">Estado</FormLabel>
-            <Input
+            <FormLabel color={labelColor} htmlFor="state">Estado</FormLabel>
+            <Input color={labelColor}
+              value={fillForm?.state}
               id="state"
               variant="flushed"
               type="text"
@@ -180,11 +204,11 @@ export const SignUpForm = () => {
       </FormControl>
 
       <FormControl display="flex">
-        <FormLabel htmlFor="available" mb="0">
+        <FormLabel color={labelColor} htmlFor="available" mb="0">
           Permitir que outros usuários me contratem para que eu receba
           encomendas?
         </FormLabel>
-        <Switch colorScheme="pink" id="available" {...register("available")} />
+        <Switch colorScheme="pink" id="available" value={fillForm?.available} {...register("available")} />
       </FormControl>
 
       <Flex justifyContent="space-between" w="100%">
