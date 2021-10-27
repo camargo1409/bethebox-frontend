@@ -55,7 +55,6 @@ export const SignUpForm = ({labelColor, fillForm}:SignUpFormProps) => {
   });
 
   const { position } = useContext(MapContext);
-  console.log(position);
 
   const handleSignUp: SubmitHandler<SignUpFormData> = async (values) => {
     try {

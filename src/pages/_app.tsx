@@ -10,7 +10,9 @@ function MyApp({ Component, pageProps }: AppProps) {
   return (
     <AuthProvider>
       <ChakraProvider theme={theme} resetCSS>
-        <MapProvider><Component {...pageProps} /></MapProvider>
+        <MapProvider>
+          <Component {...pageProps} />
+        </MapProvider>
         <ToastContainer />
       </ChakraProvider>
     </AuthProvider>
