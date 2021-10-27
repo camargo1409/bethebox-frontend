@@ -1,6 +1,8 @@
 import Icon from "@chakra-ui/icon";
 import { Flex, Grid, GridItem, List, ListItem } from "@chakra-ui/layout";
-import { useContext } from "react";
+import { GetServerSideProps } from "next";
+import { parseCookies } from "nookies";
+import { useContext, useState } from "react";
 import { BsGear } from "react-icons/bs";
 import { FaUserAlt } from "react-icons/fa";
 import { MdOutlineDashboard } from "react-icons/md";
@@ -45,5 +47,22 @@ const Dashboard = () => {
     </DashboardLayout>
   );
 };
+
+export const getServerSideProps:GetServerSideProps = async (ctx) =>{
+  const {['bethebox.token']:token} = parseCookies(ctx);
+
+  if(!token){
+    return{
+      redirect:{
+        destination: '/',
+        permanent:false
+      }
+    }
+  }
+
+  return {
+    props:{}
+  }
+}
 
 export default Dashboard;

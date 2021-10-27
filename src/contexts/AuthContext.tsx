@@ -48,6 +48,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
           const user = response.data;
 
           setUser(user);
+          Router.push("/map");
         })
         .catch((error) => {
           toast(`${error}`);
@@ -75,7 +76,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
         api.defaults.headers["Authorization"] = `Bearer ${token}`;
       }
 
-      Router.push("/dashboard");
+      Router.push("/map");
     } catch (error: any) {
       toast(`${error}`);
     }

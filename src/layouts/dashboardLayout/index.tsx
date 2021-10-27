@@ -1,22 +1,20 @@
-import { Button } from "@chakra-ui/button";
 import { useDisclosure } from "@chakra-ui/hooks";
-import { Input } from "@chakra-ui/input";
-import { Flex, List, ListItem } from "@chakra-ui/layout";
+import { Flex, List, ListItem, Link as ChakraLink } from "@chakra-ui/layout";
 import { FaUserAlt } from "react-icons/fa";
 import { MdOutlineDashboard } from "react-icons/md";
 import { RiMapPin5Line } from "react-icons/ri";
 import { BsGear } from "react-icons/bs";
-import { Box, Icon } from "@chakra-ui/react"
+import { Icon } from "@chakra-ui/react";
+import Link from "next/link";
 import {
   Drawer,
   DrawerBody,
   DrawerCloseButton,
   DrawerContent,
-  DrawerFooter,
   DrawerHeader,
   DrawerOverlay,
 } from "@chakra-ui/modal";
-import { ReactNode, RefObject, useRef } from "react";
+import { ReactNode, useRef } from "react";
 import NavBar from "../../components/NavBar";
 
 interface DashboardLayoutProps {
@@ -34,19 +32,37 @@ export const DashboardLayout = ({ children }: DashboardLayoutProps) => {
         <DrawerContent>
           <DrawerCloseButton />
           <DrawerHeader pt="6">Barra de navegação</DrawerHeader>
-          <DrawerBody >
+          <DrawerBody>
             <List spacing={3}>
               <ListItem>
-                <a href=""><Icon as={FaUserAlt} mr="3"/>Meu perfil</a>
+                <Link href="/profile" passHref>
+                  <ChakraLink>
+                    <Icon as={FaUserAlt} mr="3" />
+                    Meu perfil
+                  </ChakraLink>
+                </Link>
               </ListItem>
               <ListItem>
-                <a href=""><Icon as={MdOutlineDashboard} mr="3"/>Dashboard</a>
+                <Link href="/dashboard" passHref>
+                  <ChakraLink>
+                    <Icon as={MdOutlineDashboard} mr="3" />
+                    Dashboard
+                  </ChakraLink>
+                </Link>
               </ListItem>
               <ListItem>
-                <a href="/map"><Icon as={RiMapPin5Line} mr="3"/>Mapa</a>
+                <Link href="/map" passHref>
+                  <ChakraLink>
+                    <Icon as={RiMapPin5Line} mr="3" />
+                    Mapa
+                  </ChakraLink>
+                </Link>
               </ListItem>
               <ListItem>
-                <a href=""><Icon as={BsGear} mr="3"/>Configurações</a>
+                <a href="">
+                  <Icon as={BsGear} mr="3" />
+                  Configurações
+                </a>
               </ListItem>
             </List>
           </DrawerBody>

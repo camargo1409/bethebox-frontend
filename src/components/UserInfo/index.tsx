@@ -17,9 +17,11 @@ import { MapContext } from "../../contexts/MapContenxt";
 const UserInfo = () => {
   const { user } = useContext(AuthContext);
   const { handleSetPosition } = useContext(MapContext);
+
   useEffect(() => {
-    handleSetPosition([user.lat, user.long]);
-  }, []);
+    handleSetPosition([user?.lat, user?.long]);
+  }, [user]);
+  
   return (
     <Container maxW="90%" centerContent mt="4">
       <Flex padding="4" w="100%" direction="column" alignItems="center">
