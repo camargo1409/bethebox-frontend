@@ -3,12 +3,13 @@ import { HStack } from "@chakra-ui/react";
 import { Button } from "@chakra-ui/button";
 import { useBreakpointValue } from "@chakra-ui/media-query";
 
-import type { NextPage } from "next";
+import type { GetServerSideProps, NextPage } from "next";
 import NextLink from "next/link";
 import Image from "next/image";
 import Head from "next/head";
 
 import { SimpleHeader } from "../components/SimpleHeader";
+import { parseCookies } from "nookies";
 
 const Home: NextPage = () => {
   const isWideVersion = useBreakpointValue({
@@ -67,5 +68,22 @@ const Home: NextPage = () => {
     </>
   );
 };
+
+export const getServerSideProps:GetServerSideProps = async (ctx) =>{
+  const {['bethebox.token']:token} = parseCookies(ctx);
+
+  if(token){
+    return{
+      redirect:{
+        destination: '/map',
+        permanent:false
+      }
+    }
+  }
+
+  return {
+    props:{}
+  }
+}
 
 export default Home;

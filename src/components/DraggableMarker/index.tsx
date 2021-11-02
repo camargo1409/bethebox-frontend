@@ -1,10 +1,10 @@
 import { useCallback, useContext, useMemo, useRef, useState } from "react";
-import { Marker, Popup, useMap} from "react-leaflet";
-import { LatLngExpression } from "leaflet";
-import { MapContext } from "../../contexts/MapContenxt";
+import { Marker, Popup, useMap } from "react-leaflet";
+import { LatLng, LatLngExpression } from "leaflet";
+import { MapContext, Position } from "../../contexts/MapContenxt";
 
 interface DraggableMarkerProps {
-  initialPosition: LatLngExpression;
+  initialPosition: Position;
 }
 
 export function DraggableMarker({ initialPosition }: DraggableMarkerProps) {
@@ -17,13 +17,17 @@ export function DraggableMarker({ initialPosition }: DraggableMarkerProps) {
       dragend() {
         const marker = markerRef.current;
         if (marker != null) {
-          handleSetPosition(marker.getLatLng());
           
-          map.flyTo(marker.getLatLng())
+          const position:LatLng = {...marker.getLatLng()}
+
+          const {lat,lng} = position;
+          
+          handleSetPosition({lat,long:lng})
+          map.flyTo(marker.getLatLng());
         }
       },
     }),
-    [handleSetPosition,map]
+    [handleSetPosition, map]
   );
   const toggleDraggable = useCallback(() => {
     setDraggable((d) => !d);
@@ -35,7 +39,7 @@ export function DraggableMarker({ initialPosition }: DraggableMarkerProps) {
         <Marker
           draggable={draggable}
           eventHandlers={eventHandlers}
-          position={position}
+          position={{ lat: position.lat, lng: position.long }}
           ref={markerRef}
         >
           <Popup minWidth={90}>

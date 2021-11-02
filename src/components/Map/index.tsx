@@ -1,20 +1,17 @@
 import L from "leaflet";
-import { useContext, useState } from "react";
+import { useContext } from "react";
 import { MapContainer, Marker, Popup, TileLayer } from "react-leaflet";
 import { MapContext } from "../../contexts/MapContenxt";
 import { DraggableMarker } from "../DraggableMarker";
-import styles from "./index.module.css";
+
 import {
-  Button,
-  Modal,
-  ModalBody,
-  ModalHeader,
-  ModalFooter,
-  ModalContent,
-  ModalOverlay,
-  ModalCloseButton,
-  useDisclosure,
-} from "@chakra-ui/react";
+  Flex,
+  Text,
+} from "@chakra-ui/layout";
+
+import styles from "./index.module.css";
+import { Button } from "@chakra-ui/react";
+import { RequestContext } from "../../contexts/RequestContext";
 export interface UserNearMeData {
   id: number;
   first_name: string;
@@ -44,24 +41,19 @@ const myIcon = L.icon({
   // shadowAnchor: null
 });
 
-export const Map = ({
-  isDraggable = true,
-  usersNearMe = null,
-}: MapProps) => {
+export const Map = ({ isDraggable = true, usersNearMe = null }: MapProps) => {
   const { position } = useContext(MapContext);
-  const { isOpen, onOpen, onClose } = useDisclosure()
-  const [currentUser,setCurrentUser] = useState({} as UserNearMeData);
 
-  const handleOnOpen = (user:UserNearMeData) =>{
-    setCurrentUser(user);
-    onOpen();
-  }
+  const { handleSetSelectedUser } = useContext(RequestContext);
 
   return (
     <>
       <MapContainer
         className={styles.leafletContainer}
-        center={position}
+        center={{
+          lat: position?.lat,
+          lng: position?.long,
+        }}
         zoom={15}
         scrollWheelZoom={true}
       >
@@ -72,43 +64,40 @@ export const Map = ({
         {isDraggable ? (
           <DraggableMarker initialPosition={position} />
         ) : (
-          <Marker icon={myIcon} position={position}>
+          <Marker
+            icon={myIcon}
+            position={{
+              lat: position?.lat,
+              lng: position?.long,
+            }}
+          >
             <Popup minWidth={90}>
-              <span>My Address</span>
+              <Text fontSize="sm">My Address</Text>
             </Popup>
           </Marker>
         )}
 
         {usersNearMe &&
           usersNearMe.map((user) => (
-            <Marker position={[user.lat, user.long]}>
+            <Marker key={user.id} position={[user.lat, user.long]}>
               <Popup minWidth={90}>
-                <span>
-                  {user.first_name} {user.last_name}
-                </span>
-                <Button colorScheme="pink" onClick={() => handleOnOpen(user)}>
-                  Mais informações
-                </Button>
+                <Flex direction="column">
+                  <Text fontSize="sm">
+                    {user.first_name} está a {user.distance.toFixed(2)}km do seu
+                    endereço
+                  </Text>
+                  <Button
+                    variant="ghost"
+                    colorScheme="pink"
+                    onClick={() => handleSetSelectedUser(user)}
+                  >
+                    Mais informações
+                  </Button>
+                </Flex>
               </Popup>
             </Marker>
           ))}
       </MapContainer>
-
-      <Modal isOpen={isOpen} onClose={onClose}>
-        <ModalOverlay />
-        <ModalContent>
-          <ModalHeader>informações de {currentUser.first_name}</ModalHeader>
-          <ModalCloseButton />
-          <ModalBody></ModalBody>
-
-          <ModalFooter>
-            <Button colorScheme="blue" mr={3} onClick={onClose}>
-              Close
-            </Button>
-            <Button variant="ghost">Secondary Action</Button>
-          </ModalFooter>
-        </ModalContent>
-      </Modal>
     </>
   );
 };

@@ -2,7 +2,9 @@ import { Button } from "@chakra-ui/button";
 import { FormControl, FormLabel } from "@chakra-ui/form-control";
 import { Input } from "@chakra-ui/input";
 import { Container, Flex, Heading, VStack } from "@chakra-ui/layout";
+import { GetServerSideProps } from "next";
 import Head from "next/head";
+import { parseCookies } from "nookies";
 import { SignInForm } from "../../../components/SignInForm";
 import { SimpleHeader } from "../../../components/SimpleHeader";
 
@@ -29,5 +31,22 @@ const SignIn = () => {
     </>
   );
 };
+
+export const getServerSideProps:GetServerSideProps = async (ctx) =>{
+  const {['bethebox.token']:token} = parseCookies(ctx);
+
+  if(token){
+    return{
+      redirect:{
+        destination: '/map',
+        permanent:false
+      }
+    }
+  }
+
+  return {
+    props:{}
+  }
+}
 
 export default SignIn;

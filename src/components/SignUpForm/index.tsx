@@ -63,7 +63,7 @@ export const SignUpForm = ({labelColor, fillForm}:SignUpFormProps) => {
       const { data } = await api.post("/users", {
         ...rest,
         lat: position.lat,
-        long: position.lng,
+        long: position.long
       });
 
       toast("Usuário criado com sucesso!")
@@ -207,7 +207,7 @@ export const SignUpForm = ({labelColor, fillForm}:SignUpFormProps) => {
           Permitir que outros usuários me contratem para que eu receba
           encomendas?
         </FormLabel>
-        <Switch colorScheme="pink" id="available" value={fillForm?.available} {...register("available")} />
+        <Switch colorScheme="pink" id="available" isChecked={fillForm?.available} {...register("available")} />
       </FormControl>
 
       <Flex justifyContent="space-between" w="100%">

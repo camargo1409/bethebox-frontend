@@ -1,5 +1,7 @@
 import { Container, Flex } from "@chakra-ui/layout";
+import { GetServerSideProps } from "next";
 import Head from "next/head";
+import { parseCookies } from "nookies";
 import { SignUpForm } from "../../../components/SignUpForm";
 import { SimpleHeader } from "../../../components/SimpleHeader";
 import { MapProvider } from "../../../contexts/MapContenxt";
@@ -20,5 +22,22 @@ const SignUp = () => {
     </>
   );
 };
+
+export const getServerSideProps:GetServerSideProps = async (ctx) =>{
+  const {['bethebox.token']:token} = parseCookies(ctx);
+
+  if(token){
+    return{
+      redirect:{
+        destination: '/map',
+        permanent:false
+      }
+    }
+  }
+
+  return {
+    props:{}
+  }
+}
 
 export default SignUp;

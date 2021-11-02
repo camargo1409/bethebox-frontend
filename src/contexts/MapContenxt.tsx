@@ -1,9 +1,12 @@
-import { createContext, ReactNode, useEffect, useState } from "react";
-import { LatLngExpression } from "leaflet";
-
+import { createContext, ReactNode, useContext, useEffect, useState } from "react";
+import { AuthContext } from "./AuthContext";
+export interface Position {
+  lat: number;
+  long: number;
+}
 interface MapContextData {
-  position: LatLngExpression;
-  handleSetPosition: (position: LatLngExpression) => void;
+  position: Position;
+  handleSetPosition: (position: Position) => void;
 }
 
 interface MapProviderProps {
@@ -13,14 +16,27 @@ interface MapProviderProps {
 export const MapContext = createContext<MapContextData>({} as MapContextData);
 
 export const MapProvider = ({ children }: MapProviderProps) => {
-  const [position, setPosition] = useState<LatLngExpression>();
-  useEffect(() => {
-    navigator.geolocation.getCurrentPosition(function (position) {
-      setPosition([position.coords.latitude, position.coords.longitude]);
-    });
-  }, []);
+  const [position, setPosition] = useState<Position>({lat:0,long:0});
+  const {isAuthenticated, user} = useContext(AuthContext);
 
-  const handleSetPosition = (position: LatLngExpression) => {
+  useEffect(() => {
+    if(!isAuthenticated){
+      
+      navigator.geolocation.getCurrentPosition(function (position) {
+        setPosition({
+          lat: position.coords.latitude, 
+          long: position.coords.longitude
+        });
+      });
+    } else {
+      setPosition({
+        lat:user?.lat,
+        long:user?.long
+      })
+    }
+  }, [user]);
+
+  const handleSetPosition = (position: Position) => {
     setPosition(position);
   };
 

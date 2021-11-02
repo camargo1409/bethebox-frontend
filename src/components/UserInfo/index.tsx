@@ -16,11 +16,14 @@ import { MapContext } from "../../contexts/MapContenxt";
 
 const UserInfo = () => {
   const { user } = useContext(AuthContext);
-  const { handleSetPosition } = useContext(MapContext);
+  // const { handleSetPosition } = useContext(MapContext);
 
-  useEffect(() => {
-    handleSetPosition([user?.lat, user?.long]);
-  }, [user]);
+  // useEffect(() => {
+  //   handleSetPosition({
+  //     lat: user?.lat,
+  //     long: user?.long
+  //   });
+  // }, []);
   
   return (
     <Container maxW="90%" centerContent mt="4">

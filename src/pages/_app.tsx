@@ -5,13 +5,16 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { AuthProvider } from "../contexts/AuthContext";
 import { MapProvider } from "../contexts/MapContenxt";
+import { RequestProvider } from "../contexts/RequestContext";
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (
     <AuthProvider>
       <ChakraProvider theme={theme} resetCSS>
         <MapProvider>
-          <Component {...pageProps} />
+          <RequestProvider>
+            <Component {...pageProps} />
+          </RequestProvider>
         </MapProvider>
         <ToastContainer />
       </ChakraProvider>

@@ -1,29 +1,13 @@
-import {
-  Flex,
-  Box,
-  VStack,
-  Text,
-  useBreakpointValue,
-  Modal,
-  ModalBody,
-  ModalHeader,
-  ModalFooter,
-  ModalContent,
-  ModalOverlay,
-  ModalCloseButton,
-  Button,
-  useDisclosure
-} from "@chakra-ui/react";
+import { Flex, Box, VStack, Text, useBreakpointValue } from "@chakra-ui/react";
 import { GetServerSideProps } from "next";
 import dynamic from "next/dynamic";
 import { parseCookies } from "nookies";
 import React, { useContext, useEffect, useState } from "react";
-import { MapProps, UserNearMeData } from "../../components/Map";
+import { MapProps } from "../../components/Map";
 import { api } from "../../config/axios";
 import { AuthContext } from "../../contexts/AuthContext";
-import { MapContext } from "../../contexts/MapContenxt";
 import { DashboardLayout } from "../../layouts/dashboardLayout";
-
+import { useToast } from "@chakra-ui/react";
 const Map = dynamic<MapProps>(
   () => import("../../components/Map").then((mod) => mod.Map),
   {
@@ -31,12 +15,30 @@ const Map = dynamic<MapProps>(
   }
 );
 
+interface UserNear {
+  id: number;
+  first_name: string;
+  last_name: string;
+  email: string;
+  cpf: string;
+  
+  available: boolean;
+  address: string;
+  city: string;
+  state: string;
+  
+  distance: number;
+  lat: number;
+  long: number;
+  
+  created_at: string;
+  updated_at: string;
+}
+
 const MapPage = () => {
   const { user } = useContext(AuthContext);
-  
-  const [usersNearMe, setUsersNearMe] = useState([] as any[]);
-
-  const { handleSetPosition } = useContext(MapContext);
+  const toast = useToast();
+  const [usersNearMe, setUsersNearMe] = useState<UserNear[]>([] as UserNear[]);
 
   const isWideVersion = useBreakpointValue({
     base: false,
@@ -44,14 +46,23 @@ const MapPage = () => {
   });
 
   useEffect(() => {
-    api.get("/search").then(({ data }) => {
-      setUsersNearMe(data);
-    });
+    api
+      .get("/search")
+      .then(({ data }) => {
+        setUsersNearMe(data);
+      })
+      .catch((err) => {
+        toast({
+          title: err?.response?.status,
+          description: err?.message,
+          isClosable: true,
+          status: "error",
+          duration: 9000,
+          position: "top-right",
+        });
+      });
   }, []);
 
-  useEffect(() => {
-    handleSetPosition([user?.lat, user?.long]);
-  }, [user]);
   return (
     <DashboardLayout>
       <Flex h="93vh" w="100%" bg="gray.200" position="relative">
@@ -59,7 +70,6 @@ const MapPage = () => {
           <VStack
             zIndex="1"
             spacing="4"
-            h="100%"
             w={300}
             position="absolute"
             right="0"
@@ -70,6 +80,7 @@ const MapPage = () => {
             {usersNearMe?.map((user) => (
               <>
                 <Box
+                  key={user.id}
                   bg="white"
                   w="100%"
                   p="4"
@@ -84,7 +95,7 @@ const MapPage = () => {
                     {user.first_name} {user.last_name}
                   </Text>
                   <Text fontSize="xs" color="gray.400">
-                    {user.distance.toFixed(2)} km de distância
+                    {user.city} - {user.distance.toFixed(2)} km de distância
                   </Text>
                   <Text mt="2">{user.address}</Text>
                 </Box>
@@ -94,11 +105,9 @@ const MapPage = () => {
         )}
 
         <Box zIndex="0" h="100%" w="100%">
-          <Map isDraggable={false} usersNearMe={usersNearMe}/>
+          <Map isDraggable={false} usersNearMe={usersNearMe} />
         </Box>
       </Flex>
-
-
     </DashboardLayout>
   );
 };

@@ -37,7 +37,7 @@ export const AuthContext = createContext({} as AuthContextData);
 
 export function AuthProvider({ children }: AuthProviderProps) {
   const [user, setUser] = useState<User>({} as User);
-  const isAuthenticated = !!user;
+  const isAuthenticated = Object.keys(user).length > 0;
 
   useEffect(() => {
     const { "bethebox.token": token } = parseCookies();
@@ -48,7 +48,6 @@ export function AuthProvider({ children }: AuthProviderProps) {
           const user = response.data;
 
           setUser(user);
-          Router.push("/map");
         })
         .catch((error) => {
           toast(`${error}`);
