@@ -33,9 +33,6 @@ const Dashboard = () => {
                 <a href="">Minha conta</a>
               </ListItem>
               <ListItem>
-                <a href="">Estatisticas</a>
-              </ListItem>
-              <ListItem>
                 <a href="">Sair</a>
               </ListItem>
             </List>
