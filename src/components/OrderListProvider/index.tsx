@@ -1,31 +1,42 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import {
   Stack,
   Box,
   Text,
   Heading,
   Center,
-  Badge,
-  Flex,
   Button,
+  HStack,
+  Flex,
   useBreakpointValue,
+  Badge,
 } from "@chakra-ui/react";
 import { api } from "../../config/axios";
 
-// import { Container } from './styles';
-
-interface OrderListProps {
+interface OrderListProviderProps {
   requests: any[];
 }
 
-export const OrderList = ({ requests }: OrderListProps) => {
+export const OrderListProvider = ({ requests }: OrderListProviderProps) => {
   const isBase = useBreakpointValue({ base: true, sm: false });
+
+  const accept = async (id: any) => {
+    try {
+      const res = await api.put(`/requests/${id}?action=accept`, {
+        service_price: 2.5,
+      });
+      alert(JSON.stringify(res.data));
+    } catch (error: any) {
+      alert(JSON.stringify(error.response.data));
+    }
+  };
+
   function Feature({
+    id,
     title,
     address,
     provider_accepted,
     updatedAt,
-    price,
     ...rest
   }: any) {
     return (
@@ -41,27 +52,32 @@ export const OrderList = ({ requests }: OrderListProps) => {
         <Heading fontSize="lg">{title}</Heading>
         <Text mt={2}>{address}</Text>
         <Text mt={2}>
-          <strong>Situação: </strong>
+          <strong>Situação:</strong>
           <Badge variant="subtle" colorScheme="yellow">
-            {provider_accepted ? "Aceito pelo provedor" : "Aguardando provedor"}
+            {provider_accepted
+              ? "Aguardando confirmação do cliente"
+              : "Cliente aguardando sua confirmação"}
           </Badge>
-        </Text>
-        <Text mt={2}>
-          <strong>Preço definido: </strong> R$ {price?.toFixed(2)}
         </Text>
         <Text mt={2}>
           <strong>Última atualização: </strong> {updatedAt}
         </Text>
         <Flex wrap="wrap">
-          {provider_accepted && (
+          {!provider_accepted && (
             <>
-              <Button mt="2" w={isBase ? "100%" : "auto"} colorScheme="pink">
-                Contratar por R$ {price?.toFixed(2)}
+              <Button
+                onClick={() => accept(id)}
+                mt="2"
+                w={isBase ? "100%" : "auto"}
+                colorScheme="pink"
+              >
+                Aceitar e definir preço
               </Button>
               <Button
                 mt="2"
                 w={isBase ? "100%" : "auto"}
                 ml={!isBase ? "2" : 0}
+                // colorScheme="purple"
               >
                 Recusar
               </Button>
@@ -79,21 +95,19 @@ export const OrderList = ({ requests }: OrderListProps) => {
       {!!requests?.length ? (
         requests?.map((request) => (
           <Feature
+            id={request.id}
             title={
-              request.provider.first_name + " " + request.provider.last_name
+              request.customer.first_name + " " + request.customer.last_name
             }
-            address={request.provider.address + " " + request.provider.city}
-            provider_accepted={
-              request.provider_accepted
-            }
-            price={request.service_price}
+            address={request.customer.address + " " + request.customer.city}
+            provider_accepted={request.provider_accepted}
             updatedAt={request.updated_at}
           />
         ))
       ) : (
         <Center>
           <Text mt="10" color="gray.400">
-            Você não realizou nenhuma contratação
+            Você não recebeu nenhuma solicação de contratação ainda
           </Text>
         </Center>
       )}

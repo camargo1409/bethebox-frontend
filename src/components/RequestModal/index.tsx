@@ -54,15 +54,26 @@ export const RequestModal = () => {
         isClosable: true,
         status: "success"
       })
-    } catch (error) {
+    } catch (error:any) {
       setIsLoading(false);
       onCloseRequestModal();
-      toast({
-        title: "Houve algum erro ao realizar a solicitação!",
-        position: "top-right",
-        isClosable: true,
-        status: "error"
-      })
+      
+      if(error.response.status >= 500){
+        toast({
+          title: "Houve algum erro ao realizar a solicitação!",
+          position: "top-right",
+          isClosable: true,
+          status: "error"
+        })
+      }
+      else{
+        toast({
+          title: error.response.data.msg,
+          position: "top-right",
+          isClosable: true,
+          status: "warning"
+        })
+      }
     }
   };
 
