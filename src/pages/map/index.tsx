@@ -1,4 +1,4 @@
-import { Flex, Box, VStack, Text, useBreakpointValue } from "@chakra-ui/react";
+import { Flex, Box, VStack, Text, useBreakpointValue, Container, useDisclosure, Collapse, Button } from "@chakra-ui/react";
 import { GetServerSideProps } from "next";
 import dynamic from "next/dynamic";
 import { parseCookies } from "nookies";
@@ -6,8 +6,11 @@ import React, { useContext, useEffect, useState } from "react";
 import { MapProps } from "../../components/Map";
 import { api } from "../../config/axios";
 import { AuthContext } from "../../contexts/AuthContext";
-import { DashboardLayout } from "../../layouts/dashboardLayout";
-import { useToast } from "@chakra-ui/react";
+import { SidebarWithHeader } from "../../layouts/dashboardLayout";
+import { useToast, Heading } from "@chakra-ui/react";
+import { IoIosArrowDown, IoIosArrowUp } from 'react-icons/io'
+import { Fade, ScaleFade, Slide, SlideFade } from '@chakra-ui/react'
+import { MapContext } from "../../contexts/MapContenxt";
 const Map = dynamic<MapProps>(
   () => import("../../components/Map").then((mod) => mod.Map),
   {
@@ -39,7 +42,7 @@ const MapPage = () => {
   const { user } = useContext(AuthContext);
   const toast = useToast();
   const [usersNearMe, setUsersNearMe] = useState<UserNear[]>([] as UserNear[]);
-
+  const { isOpen, onToggle } = useDisclosure()
   const isWideVersion = useBreakpointValue({
     base: false,
     md: true,
@@ -63,52 +66,97 @@ const MapPage = () => {
       });
   }, []);
 
+  
+
   return (
-    <DashboardLayout>
+    <SidebarWithHeader>
       <Flex h="93vh" w="100%" bg="gray.200" position="relative">
         {isWideVersion && (
-          <VStack
-            zIndex="1"
-            spacing="4"
-            w={300}
+          <Container
             position="absolute"
-            right="0"
+            top={10}
+            right={10}
+            zIndex="1"
             pt="4"
             pr="4"
             overflowY="auto"
+            w={300}
+            bg="blackAlpha.300"
+            pb={4}
+            borderRadius="4"
+            boxShadow="lg"
           >
-            {usersNearMe?.map((user) => (
-              <>
-                <Box
-                  key={user.id}
-                  bg="white"
-                  w="100%"
-                  p="4"
-                  borderRadius="4"
-                  direction="column"
-                  _hover={{
-                    bg: "gray.100",
-                  }}
-                  boxShadow="lg"
+            <Button 
+              width="100%"
+              rightIcon={isOpen ? <IoIosArrowDown /> : <IoIosArrowUp />} 
+              justifyContent="flex-start"
+              variant='ghost'
+              as='h4' 
+              size='md'
+              onClick={onToggle}
+            >
+              Pessoas perto de você
+            </Button>
+
+            <Collapse in={!isOpen} animateOpacity>
+              <VStack        
+                spacing="4"
                 >
-                  <Text>
-                    {user.first_name} {user.last_name}
-                  </Text>
-                  <Text fontSize="xs" color="gray.400">
-                    {user.city} - {user.distance.toFixed(2)} km de distância
-                  </Text>
-                  <Text mt="2">{user.address}</Text>
-                </Box>
-              </>
-            ))}
-          </VStack>
+                {usersNearMe?.map((user) => (
+                  <React.Fragment key={user.id}>
+                    <Box 
+                      mt="4"
+                      bg="white"
+                      w="100%"
+                      px={3}
+                      py={2}
+                      borderRadius="4"
+                      direction="column"
+                      transition="width 100ms ease-in-out, background-color 100ms ease-in-out"
+                      _hover={{
+                        bg: "gray.100",
+                        w: "105%",
+                      }
+                    }
+                      cursor="pointer"
+                      >
+                      <Box
+                        mt='1'
+                        fontWeight='semibold'
+                        fontSize="lg"
+                        lineHeight='tight'
+                        noOfLines={1}
+                      >
+                        {user.first_name} {user.last_name}
+                      </Box>
+                      <Box
+                        fontSize="sm"
+                      >
+                        {user.distance.toFixed(2)} km de distância
+                      </Box>
+                      <Box fontSize="xs" color="gray.600">
+                        {user.city}
+                      </Box>
+                        
+                      
+                      
+                      <Text mt="2">{user.address}</Text>
+                    </Box>
+                  </React.Fragment>
+                  
+                ))}
+              </VStack>
+            </Collapse>
+ 
+          
+          </Container>
         )}
 
         <Box zIndex="0" h="100%" w="100%">
-          <Map isDraggable={false} usersNearMe={usersNearMe} />
+          <Map isDraggable={false} usersNearMe={usersNearMe}/>
         </Box>
       </Flex>
-    </DashboardLayout>
+    </SidebarWithHeader>
   );
 };
 

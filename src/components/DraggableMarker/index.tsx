@@ -45,8 +45,8 @@ export function DraggableMarker({ initialPosition }: DraggableMarkerProps) {
           <Popup minWidth={90}>
             <span onClick={toggleDraggable}>
               {draggable
-                ? "Marker is draggable"
-                : "Click here to make marker draggable"}
+                ? "Arraste o ponteiro até seu endereço"
+                : "Clique aqui para tornar o ponteiro arrastável"}
             </span>
           </Popup>
         </Marker>

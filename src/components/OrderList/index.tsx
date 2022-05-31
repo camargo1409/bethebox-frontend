@@ -11,6 +11,7 @@ import {
   useBreakpointValue,
 } from "@chakra-ui/react";
 import { api } from "../../config/axios";
+import PopLocale from "../PopLocale";
 
 // import { Container } from './styles';
 
@@ -26,6 +27,7 @@ export const OrderList = ({ requests }: OrderListProps) => {
     provider_accepted,
     updatedAt,
     price,
+    location,
     ...rest
   }: any) {
     return (
@@ -39,7 +41,11 @@ export const OrderList = ({ requests }: OrderListProps) => {
         {...rest}
       >
         <Heading fontSize="lg">{title}</Heading>
-        <Text mt={2}>{address}</Text>
+        <Flex>
+          <Text mt={2} mr="7">{address}</Text>
+          <PopLocale location={location}></PopLocale>
+        </Flex>
+        
         <Text mt={2}>
           <strong>Situação: </strong>
           <Badge variant="subtle" colorScheme="yellow">
@@ -88,6 +94,7 @@ export const OrderList = ({ requests }: OrderListProps) => {
             }
             price={request.service_price}
             updatedAt={request.updated_at}
+            location={{lat: request.provider.lat, long: request.provider.long}}
           />
         ))
       ) : (

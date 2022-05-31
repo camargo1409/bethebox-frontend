@@ -1,5 +1,5 @@
 import Router from "next/router";
-import { parseCookies, setCookie } from "nookies";
+import { parseCookies, setCookie,destroyCookie } from "nookies";
 import { createContext, ReactNode, useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { api } from "../config/axios";
@@ -11,6 +11,7 @@ type SignInCredentials = {
 
 interface AuthContextData {
   signIn: (credentials: SignInCredentials) => Promise<void>;
+  signOut: () => void;
   isAuthenticated: boolean;
   user: User;
 }
@@ -81,12 +82,19 @@ export function AuthProvider({ children }: AuthProviderProps) {
     }
   }
 
+  function signOut() {
+    destroyCookie(undefined, "bethebox.token")
+    Router.push('/')
+  }
+
   return (
     <AuthContext.Provider
       value={{
         signIn,
+        signOut,
         isAuthenticated,
         user,
+        
       }}
     >
       {children}

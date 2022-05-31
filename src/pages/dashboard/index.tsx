@@ -1,7 +1,7 @@
 import { Box, Container, Grid, GridItem } from "@chakra-ui/layout";
 import React, { useContext } from "react";
 import { OrderList } from "../../components/OrderList";
-import { DashboardLayout } from "../../layouts/dashboardLayout";
+import { SidebarWithHeader } from "../../layouts/dashboardLayout";
 import { Tabs, TabList, TabPanels, Tab, TabPanel } from "@chakra-ui/react";
 import { AuthContext } from "../../contexts/AuthContext";
 import { RequestContext } from "../../contexts/RequestContext";
@@ -11,7 +11,7 @@ const Dashboard = () => {
   const { requests } = useContext(RequestContext);
   const { asCustomer, asProvider } = requests;
   return (
-    <DashboardLayout>
+    <SidebarWithHeader>
       <Container maxW="1850px" mt="4" flex="1" display="flex">
         <Tabs
           // variant="soft-rounded"
@@ -85,7 +85,7 @@ const Dashboard = () => {
           </TabPanels>
         </Tabs>
       </Container>
-    </DashboardLayout>
+    </SidebarWithHeader>
   );
 };
 
