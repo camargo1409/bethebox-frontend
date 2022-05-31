@@ -1,5 +1,5 @@
 import { Box, Container, Grid, GridItem } from "@chakra-ui/layout";
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import { OrderList } from "../../components/OrderList";
 import { SidebarWithHeader } from "../../layouts/dashboardLayout";
 import { Tabs, TabList, TabPanels, Tab, TabPanel } from "@chakra-ui/react";
@@ -8,8 +8,13 @@ import { RequestContext } from "../../contexts/RequestContext";
 import { OrderListProvider } from "../../components/OrderListProvider";
 const Dashboard = () => {
   const { user } = useContext(AuthContext);
-  const { requests } = useContext(RequestContext);
+  const { requests, getRequests } = useContext(RequestContext);
   const { asCustomer, asProvider } = requests;
+
+  useEffect(() => {
+    getRequests();
+  }, []);
+
   return (
     <SidebarWithHeader>
       <Container maxW="1850px" mt="4" flex="1" display="flex">
@@ -28,7 +33,7 @@ const Dashboard = () => {
 
           <TabPanels>
             <TabPanel>
-              <OrderList requests={asCustomer}/>
+              <OrderList requests={asCustomer} />
               {/* <Grid
               mx="auto"
               py={70}
@@ -78,9 +83,9 @@ const Dashboard = () => {
               ></GridItem>
             </Grid> */}
             </TabPanel>
-            
+
             <TabPanel>
-              <OrderListProvider requests={asProvider}/>
+              <OrderListProvider requests={asProvider} />
             </TabPanel>
           </TabPanels>
         </Tabs>
