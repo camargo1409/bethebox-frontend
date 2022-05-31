@@ -39,6 +39,7 @@ const Map = dynamic<any>(() => import("../Map").then((mod) => mod.Map), {
 
 import { MapContext, MapProvider } from "../../contexts/MapContenxt";
 import { FaPray } from "react-icons/fa";
+import { AuthContext } from "../../contexts/AuthContext";
 
 interface SignUpFormData {
   first_name: string;
@@ -68,6 +69,8 @@ interface SignUpFormProps {
 }
 
 export const SignUpForm = ({ labelColor, fillForm }: SignUpFormProps) => {
+  const { signIn } = useContext(AuthContext);
+
   const { register, handleSubmit, formState } = useForm({
     resolver: yupResolver(signUpFormSchema),
   });
@@ -80,6 +83,8 @@ export const SignUpForm = ({ labelColor, fillForm }: SignUpFormProps) => {
     try {
       const { confirm_password, ...rest } = values;
 
+      const {email, password} = rest
+
       const { data } = await api.post("/users", {
         ...rest,
         lat: position.lat,
@@ -87,6 +92,7 @@ export const SignUpForm = ({ labelColor, fillForm }: SignUpFormProps) => {
       });
 
       toast("Usuário criado com sucesso!");
+      await signIn({ email, password });
     } catch (error: any) {
       console.log(error.response);
       toast(`${error.response.status} - ${error.response.data.msg}`);
