@@ -1,3 +1,4 @@
+import { useRouter } from "next/router";
 import { createContext, ReactNode, useContext, useEffect, useState } from "react";
 import { AuthContext } from "./AuthContext";
 export interface Position {
@@ -18,10 +19,11 @@ export const MapContext = createContext<MapContextData>({} as MapContextData);
 export const MapProvider = ({ children }: MapProviderProps) => {
   const [position, setPosition] = useState<Position>({lat:0,long:0});
   const {isAuthenticated, user} = useContext(AuthContext);
-
+  const {pathname} = useRouter()
+  
   useEffect(() => {
     if(!isAuthenticated){
-      
+      if(pathname !== "/auth/signup") return
       navigator.geolocation.getCurrentPosition(function (position) {
         setPosition({
           lat: position.coords.latitude, 
@@ -34,7 +36,7 @@ export const MapProvider = ({ children }: MapProviderProps) => {
         long:user?.long
       })
     }
-  }, [user]);
+  }, [user, pathname]);
 
   const handleSetPosition = (position: Position) => {
     setPosition(position);
