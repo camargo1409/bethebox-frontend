@@ -35,6 +35,7 @@ export const RequestModal = () => {
   const {
     requestModalIsOpen,
     onCloseRequestModal,
+    getRequests,
     selectedUser: user,
   } = useContext(RequestContext);
   const toast = useToast();
@@ -52,27 +53,28 @@ export const RequestModal = () => {
         title: "Solicitação realizada com sucesso!",
         position: "top-right",
         isClosable: true,
-        status: "success"
-      })
-    } catch (error:any) {
+        status: "success",
+      });
+
+      getRequests();
+    } catch (error: any) {
       setIsLoading(false);
       onCloseRequestModal();
-      
-      if(error.response.status >= 500){
+
+      if (error.response.status >= 500) {
         toast({
           title: "Houve algum erro ao realizar a solicitação!",
           position: "top-right",
           isClosable: true,
-          status: "error"
-        })
-      }
-      else{
+          status: "error",
+        });
+      } else {
         toast({
           title: error.response.data.msg,
           position: "top-right",
           isClosable: true,
-          status: "warning"
-        })
+          status: "warning",
+        });
       }
     }
   };

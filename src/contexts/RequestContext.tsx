@@ -24,6 +24,7 @@ interface RequestContextData {
   handleSetSelectedUser: (user: UserNearMeData) => void;
   onOpenRequestModal: () => void;
   onCloseRequestModal: () => void;
+  getRequests: () => void;
   requestModalIsOpen: boolean;
   requests: Requests;
 }
@@ -38,23 +39,24 @@ export const RequestProvider = ({ children }: RequestProviderProps) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [requests, setRequests] = useState<Requests>({} as Requests);
 
+  const getRequests = async () => {
+    const { data: asCustomer } = await api.get("/requests", {
+      params: {
+        as: "customer",
+      },
+    });
+
+    const { data: asProvider } = await api.get("/requests", {
+      params: {
+        as: "provider",
+      },
+    });
+
+    setRequests({ asCustomer, asProvider });
+  };
+
   useEffect(() => {
     if (isAuthenticated) {
-      const getRequests = async () => {
-        const { data: asCustomer } = await api.get("/requests", {
-          params: {
-            as: "customer",
-          },
-        });
-
-        const { data: asProvider } = await api.get("/requests", {
-          params: {
-            as: "provider",
-          },
-        });
-
-        setRequests({ asCustomer, asProvider });
-      };
       getRequests();
     }
   }, [isAuthenticated]);
@@ -69,6 +71,7 @@ export const RequestProvider = ({ children }: RequestProviderProps) => {
       value={{
         selectedUser,
         handleSetSelectedUser,
+        getRequests,
         onOpenRequestModal: onOpen,
         onCloseRequestModal: onClose,
         requestModalIsOpen: isOpen,
