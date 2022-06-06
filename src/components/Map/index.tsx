@@ -25,6 +25,7 @@ export interface UserNearMeData {
   long: number;
   available: boolean;
   distance: number;
+  cellphone: string;
 }
 export interface MapProps {
   isDraggable?: boolean;
