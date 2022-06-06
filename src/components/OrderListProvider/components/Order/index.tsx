@@ -23,6 +23,12 @@ interface OrderProps {
     customer_confirmed: boolean;
     has_arrived: boolean;
     updated_at: string;
+    customer: {
+      first_name: string,
+      last_name: string,
+      address: string,
+      city: string
+    }
   };
 }
 
@@ -32,7 +38,8 @@ export const Order = ({ request }: OrderProps) => {
   const isBase = useBreakpointValue({ base: true, sm: false });
 
   const { isOpen, onOpen, onClose } = useDisclosure();
-
+  console.log(request);
+  
   const getStatus = () => {
     if (request?.has_arrived) {
       return "Item finalizado!";
@@ -93,8 +100,20 @@ export const Order = ({ request }: OrderProps) => {
         <Heading fontSize="lg">{request?.title}</Heading>
         <Text mt={2}>{request?.address}</Text>
         <Text mt={2}>
+          <strong>Cliente: </strong>{request?.customer.first_name} {request?.customer.last_name}
+        </Text>
+        <Text mt={2}>
+          <strong>Celular: </strong>(17) 99138-8001
+        </Text>
+        <Text mt={2}>
+          <strong>Endereço: </strong>{request?.customer.address}
+        </Text>
+        <Text mt={2}>
+          <strong>Cidade: </strong>{request?.customer.city}
+        </Text>
+        <Text mt={2}>
           <strong>Situação:</strong>
-          <Badge variant="subtle" colorScheme="yellow">
+          <Badge variant="solid" colorScheme="orange" ml={1}>
             {getStatus()}
           </Badge>
         </Text>
@@ -108,7 +127,7 @@ export const Order = ({ request }: OrderProps) => {
                 onClick={onOpen}
                 mt="2"
                 w={isBase ? "100%" : "auto"}
-                colorScheme="pink"
+                colorScheme="green"
               >
                 Aceitar e definir preço
               </Button>
@@ -117,12 +136,13 @@ export const Order = ({ request }: OrderProps) => {
                 w={isBase ? "100%" : "auto"}
                 ml={!isBase ? "2" : 0}
                 onClick={() => refuse(Number(request?.id))}
+                colorScheme="red"
               >
                 Recusar
               </Button>
             </>
           )}
-          {request?.customer_confirmed && !request?.has_arrived && (
+          {(request?.customer_confirmed && !request?.has_arrived) ? (
             <Button
               colorScheme="pink"
               mt={2}
@@ -130,7 +150,7 @@ export const Order = ({ request }: OrderProps) => {
             >
               Informar que a encomenda chegou!
             </Button>
-          )}
+          ) : null}
         </Flex>
       </Box>
       <AcceptOrderModal

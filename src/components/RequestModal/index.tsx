@@ -123,6 +123,10 @@ export const RequestModal = () => {
                   <Th>Address</Th>
                   <Td>{user?.address}</Td>
                 </Tr>
+                <Tr>
+                  <Th>Celular</Th>
+                  <Td>(17) 99138-8001</Td>
+                </Tr>
               </Tbody>
               <Tfoot></Tfoot>
             </Table>
@@ -131,7 +135,7 @@ export const RequestModal = () => {
         <ModalFooter>
           <Button
             isLoading={isLoading}
-            colorScheme="pink"
+            colorScheme="blue"
             onClick={() => createRequest()}
           >
             Solicitar contratação
