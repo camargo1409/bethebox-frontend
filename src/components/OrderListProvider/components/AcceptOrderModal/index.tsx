@@ -11,9 +11,10 @@ import {
   ModalFooter,
   Button,
 } from "@chakra-ui/react";
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { toast } from "react-toastify";
 import { api } from "../../../../config/axios";
+import { RequestContext } from "../../../../contexts/RequestContext";
 
 interface AcceptOrderModalProps {
   id: number;
@@ -27,6 +28,7 @@ export const AcceptOrderModal = ({
   onClose,
 }: AcceptOrderModalProps) => {
   const [price, setPrice] = useState(0);
+  const { getRequests } = useContext(RequestContext);
 
   const accept = async (id: any) => {
     try {
@@ -34,6 +36,7 @@ export const AcceptOrderModal = ({
         service_price: price,
       });
       toast("A proposta foi enviada ao cliente");
+      getRequests();
       onClose();
     } catch (error: any) {
       toast("Erro ao enviar proposta. Por favor, tente novamente", {

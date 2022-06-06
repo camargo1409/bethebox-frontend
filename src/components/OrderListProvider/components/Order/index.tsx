@@ -8,9 +8,10 @@ import {
   useBreakpointValue,
   useDisclosure,
 } from "@chakra-ui/react";
-import React from "react";
+import React, { useContext } from "react";
 import { toast } from "react-toastify";
 import { api } from "../../../../config/axios";
+import { RequestContext } from "../../../../contexts/RequestContext";
 import { AcceptOrderModal } from "../AcceptOrderModal";
 
 interface OrderProps {
@@ -32,7 +33,10 @@ interface OrderProps {
 }
 
 export const Order = ({ request }: OrderProps) => {
+  const { getRequests } = useContext(RequestContext);
+
   const isBase = useBreakpointValue({ base: true, sm: false });
+
   const { isOpen, onOpen, onClose } = useDisclosure();
   console.log(request);
   
@@ -56,6 +60,7 @@ export const Order = ({ request }: OrderProps) => {
     try {
       const res = await api.put(`/requests/${id}?action=has_arrived`);
       toast("O cliente será informado que a encomenda chegou!");
+      getRequests();
       onClose();
     } catch (error: any) {
       toast(
@@ -71,6 +76,7 @@ export const Order = ({ request }: OrderProps) => {
     try {
       const res = await api.put(`/requests/${id}?action=refuse`);
       toast("A solicitação foi recusada com sucesso!");
+      getRequests();
     } catch (error: any) {
       toast(
         "Erro ao enviar status para o cliente. Por favor, tente novamente",
@@ -80,7 +86,7 @@ export const Order = ({ request }: OrderProps) => {
       );
     }
   };
-  
+
   return (
     <>
       <Box

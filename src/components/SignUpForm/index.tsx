@@ -40,6 +40,7 @@ const Map = dynamic<any>(() => import("../Map").then((mod) => mod.Map), {
 import { MapContext, MapProvider } from "../../contexts/MapContenxt";
 import { FaPray } from "react-icons/fa";
 import { AuthContext } from "../../contexts/AuthContext";
+import { useRouter } from "next/router";
 
 interface SignUpFormData {
   first_name: string;
@@ -78,6 +79,8 @@ export const SignUpForm = ({ labelColor, fillForm }: SignUpFormProps) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   const { position } = useContext(MapContext);
+
+  const router = useRouter()
 
   const handleSignUp: SubmitHandler<SignUpFormData> = async (values) => {
     try {
@@ -299,7 +302,7 @@ export const SignUpForm = ({ labelColor, fillForm }: SignUpFormProps) => {
           >
             Salvar
           </Button>
-          <Button colorScheme="gray">Cancelar</Button>
+          <Button colorScheme="gray" onClick={() => router.push('/auth/signin')}>Voltar</Button>
         </Flex>
       </VStack>
       <Modal isOpen={isOpen} size="xl" onClose={onClose}>

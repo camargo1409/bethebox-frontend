@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import {
   Stack,
   Box,
@@ -13,61 +13,63 @@ import {
 import { api } from "../../config/axios";
 import PopLocale from "../PopLocale";
 import { toast } from "react-toastify";
+import { RequestContext } from "../../contexts/RequestContext";
 
 // import { Container } from './styles';
 
 interface OrderListProps {
   requests: any[];
 }
-
-export const OrderList = ({ requests }: OrderListProps) => {
+function Feature({ request }: any) {
   const isBase = useBreakpointValue({ base: true, sm: false });
-  function Feature({ request }: any) {
-    const acceptProposal = async (id: number) => {
-      try {
-        const res = await api.put(`/requests/${id}?action=hire_provider`);
-        toast(
-          "Você aceitou a proposta. Agora é só aguardar o provedor receber o seu pedido!"
-        );
-      } catch (error: any) {
-        toast("Erro ao enviar proposta. Por favor, tente novamente", {
+  const { getRequests } = useContext(RequestContext);
+  const acceptProposal = async (id: number) => {
+    try {
+      const res = await api.put(`/requests/${id}?action=hire_provider`);
+      toast(
+        "Você aceitou a proposta. Agora é só aguardar o provedor receber o seu pedido!"
+      );
+      getRequests();
+    } catch (error: any) {
+      toast("Erro ao enviar proposta. Por favor, tente novamente", {
+        type: "error",
+      });
+    }
+  };
+
+  const getStatus = () => {
+    if (request?.has_arrived) {
+      return "Sua encomenda chegou! Você pode retirá-la no endereço do provedor ao efetuar o pagamento diretamente com ele!";
+    }
+
+    if (request?.customer_confirmed) {
+      return "Aguardando recebimento da encomenda";
+    }
+
+    if (request?.provider_accepted) {
+      return "Aceito pelo provedor";
+    } else {
+      return "Aguardando confirmação do provedor";
+    }
+  };
+
+  const refuse = async (id: number) => {
+    try {
+      const res = await api.put(`/requests/${id}?action=refuse`);
+      toast("A solicitação foi recusada com sucesso!");
+      getRequests();
+    } catch (error: any) {
+      toast(
+        "Erro ao enviar status para o cliente. Por favor, tente novamente",
+        {
           type: "error",
-        });
-      }
-    };
+        }
+      );
+    }
+  };
 
-    const getStatus = () => {
-      if (request?.has_arrived) {
-        return "Sua encomenda chegou! Você pode retirá-la no endereço do provedor ao efetuar o pagamento diretamente com ele!";
-      }
-
-      if (request?.customer_confirmed) {
-        return "Aguardando recebimento da encomenda";
-      }
-
-      if (request?.provider_accepted) {
-        return "Aceito pelo provedor";
-      } else {
-        return "Aguardando confirmação do provedor";
-      }
-    };
-
-    const refuse = async (id: number) => {
-      try {
-        const res = await api.put(`/requests/${id}?action=refuse`);
-        toast("A solicitação foi recusada com sucesso!");
-      } catch (error: any) {
-        toast(
-          "Erro ao enviar status para o cliente. Por favor, tente novamente",
-          {
-            type: "error",
-          }
-        );
-      }
-    };
-
-    return (
-      <Box
+  return (
+    <Box
         p={5}
         shadow="md"
         bg="blue.400"
@@ -128,8 +130,10 @@ export const OrderList = ({ requests }: OrderListProps) => {
           ) : null}
         </Flex>
       </Box>
-    );
-  }
+  );
+}
+
+export const OrderList = ({ requests }: OrderListProps) => {
   return (
     <Stack spacing={3}>
       <Text fontSize="2xl" fontWeight="bold">
