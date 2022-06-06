@@ -7,10 +7,8 @@ import { MapProps } from "../../components/Map";
 import { api } from "../../config/axios";
 import { AuthContext } from "../../contexts/AuthContext";
 import { SidebarWithHeader } from "../../layouts/dashboardLayout";
-import { useToast, Heading } from "@chakra-ui/react";
+import { useToast } from "@chakra-ui/react";
 import { IoIosArrowDown, IoIosArrowUp } from 'react-icons/io'
-import { Fade, ScaleFade, Slide, SlideFade } from '@chakra-ui/react'
-import { MapContext } from "../../contexts/MapContenxt";
 const Map = dynamic<MapProps>(
   () => import("../../components/Map").then((mod) => mod.Map),
   {
@@ -29,6 +27,7 @@ interface UserNear {
   address: string;
   city: string;
   state: string;
+  cellphone: string;
   
   distance: number;
   lat: number;

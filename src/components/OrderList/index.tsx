@@ -78,8 +78,20 @@ export const OrderList = ({ requests }: OrderListProps) => {
         <Heading fontSize="lg">{request?.title}</Heading>
         <Text mt={2}>{request?.address}</Text>
         <Text mt={2}>
-          <strong>Situação: </strong>
-          <Badge variant="subtle" colorScheme="yellow">
+          <strong>Provedor: </strong>{request?.provider.first_name} {request?.provider.last_name}
+        </Text>
+        <Text mt={2}>
+          <strong>Celular: </strong>(17) 99126-7046
+        </Text>
+        <Text mt={2}>
+          <strong>Endereço: </strong>{request?.provider.address}
+        </Text>
+        <Text mt={2}>
+          <strong>Cidade: </strong>{request?.provider.city}
+        </Text>
+        <Text mt={2}>
+          <strong>Situação:</strong>
+          <Badge variant="solid" colorScheme="orange" ml={1}>
             {getStatus()}
           </Badge>
         </Text>
@@ -93,12 +105,12 @@ export const OrderList = ({ requests }: OrderListProps) => {
           <strong>Última atualização: </strong> {request?.updated_at}
         </Text>
         <Flex wrap="wrap">
-          {request?.provider_accepted && !request?.customer_confirmed && (
+          {(request?.provider_accepted && !request?.customer_confirmed) ? (
             <>
               <Button
                 mt="2"
                 w={isBase ? "100%" : "auto"}
-                colorScheme="pink"
+                colorScheme="green"
                 onClick={() => acceptProposal(request?.id)}
               >
                 Contratar por R$ {request?.service_price?.toFixed(2)}
@@ -108,11 +120,12 @@ export const OrderList = ({ requests }: OrderListProps) => {
                 w={isBase ? "100%" : "auto"}
                 ml={!isBase ? "2" : 0}
                 onClick={() => refuse(Number(request?.id))}
+                colorScheme="red"
               >
                 Recusar
               </Button>
             </>
-          )}
+          ) : null}
         </Flex>
       </Box>
     );
