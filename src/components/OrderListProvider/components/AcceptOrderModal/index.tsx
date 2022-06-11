@@ -57,7 +57,7 @@ export const AcceptOrderModal = ({
               pointerEvents="none"
               color="gray.300"
               fontSize="1.2em"
-              children="$"
+              children="R$"
             />
             <Input
               variant="filled"
