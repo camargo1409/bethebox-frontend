@@ -114,13 +114,13 @@ export const RequestModal = () => {
                   <Td>{user?.cpf}</Td>
                 </Tr>
                 <Tr>
-                  <Th>City</Th>
+                  <Th>Cidade</Th>
                   <Td>
                     {user?.city} - {user?.state}
                   </Td>
                 </Tr>
                 <Tr>
-                  <Th>Address</Th>
+                  <Th>Endereço</Th>
                   <Td>{user?.address}</Td>
                 </Tr>
                 <Tr>

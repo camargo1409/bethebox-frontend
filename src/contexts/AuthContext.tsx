@@ -1,5 +1,5 @@
 import Router from "next/router";
-import { parseCookies, setCookie,destroyCookie } from "nookies";
+import { parseCookies, setCookie, destroyCookie } from "nookies";
 import { createContext, ReactNode, useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { api } from "../config/axios";
@@ -12,6 +12,7 @@ type SignInCredentials = {
 interface AuthContextData {
   signIn: (credentials: SignInCredentials) => Promise<void>;
   signOut: () => void;
+  setUserInfo: (user: User) => void;
   isAuthenticated: boolean;
   user: User;
 }
@@ -26,12 +27,17 @@ interface User {
   email: string;
   cpf: string;
   confirm_password: string;
-  address: string;
+  address: {
+    street: string;
+    neighborhood: string;
+    city: string;
+  };
   state: string;
   city: string;
   available: boolean;
   lat: number;
   long: number;
+  cellphone: string;
 }
 
 export const AuthContext = createContext({} as AuthContextData);
@@ -82,9 +88,13 @@ export function AuthProvider({ children }: AuthProviderProps) {
     }
   }
 
+  function setUserInfo(user: User) {
+    setUser(user);
+  }
+
   function signOut() {
-    destroyCookie(undefined, "bethebox.token")
-    Router.push('/')
+    destroyCookie(undefined, "bethebox.token");
+    Router.push("/");
   }
 
   return (
@@ -92,9 +102,9 @@ export function AuthProvider({ children }: AuthProviderProps) {
       value={{
         signIn,
         signOut,
+        setUserInfo,
         isAuthenticated,
         user,
-        
       }}
     >
       {children}

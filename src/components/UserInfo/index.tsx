@@ -11,20 +11,57 @@ import { SignUpForm } from "../SignUpForm";
 import { Stack } from "@chakra-ui/layout";
 import { MdModeEdit } from "react-icons/md";
 import { MapContext } from "../../contexts/MapContenxt";
+import { SubmitHandler } from "react-hook-form";
+import { api } from "../../config/axios";
+import { toast } from "react-toastify";
 
 // import { Container } from './styles';
+interface SignUpFormData {
+  first_name: string;
+  last_name: string;
+  email: string;
+  cpf: string;
+  password: string;
+  confirm_password: string;
+  address: string;
+  state: string;
+  city: string;
+  available: boolean;
+  cellphone: string;
+}
 
 const UserInfo = () => {
-  const { user } = useContext(AuthContext);
-  // const { handleSetPosition } = useContext(MapContext);
+  const { user, setUserInfo } = useContext(AuthContext);
+  const { position } = useContext(MapContext);
 
-  // useEffect(() => {
-  //   handleSetPosition({
-  //     lat: user?.lat,
-  //     long: user?.long
-  //   });
-  // }, []);
-  
+  const handleUserUpdate: SubmitHandler<SignUpFormData> = async (values) => {
+    try {
+      const { confirm_password, address, ...rest } = values;
+
+      const { city } = rest;
+
+      const [street, neighborhood] = address.split(",");
+      console.log(street, neighborhood);
+
+      const { data: updatedUser }: any = await api.put("/users", {
+        ...rest,
+        address: {
+          street,
+          neighborhood,
+          city,
+        },
+        lat: position.lat,
+        long: position.long,
+      });
+
+      setUserInfo(updatedUser);
+      console.log(updatedUser);
+      toast("Usuário atualizado com sucesso!");
+    } catch (error: any) {
+      toast(`Erro ao atualizar usuário!`);
+    }
+  };
+
   return (
     <Container maxW="90%" centerContent mt="4">
       <Flex padding="4" w="100%" direction="column" alignItems="center">
@@ -33,9 +70,7 @@ const UserInfo = () => {
           name={`${user.first_name} ${user.last_name}`}
           border="4px"
           borderColor="gray.50"
-        >
-
-        </Avatar>
+        ></Avatar>
         <Box
           w="100%"
           borderRadius="10"
@@ -44,7 +79,11 @@ const UserInfo = () => {
           bgGradient="linear(to-br, #342c9c, #120650)"
         >
           <Flex mt="20" px={50} justifyContent="center">
-            <SignUpForm labelColor="white" fillForm={user} />
+            <SignUpForm
+              labelColor="white"
+              fillForm={user}
+              onSubmit={handleUserUpdate}
+            />
           </Flex>
         </Box>
       </Flex>

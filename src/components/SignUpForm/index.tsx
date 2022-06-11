@@ -31,7 +31,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { signUpFormSchema } from "./schema";
 import { api } from "../../config/axios";
 import { toast } from "react-toastify";
-import { useContext, useEffect } from "react";
+import { useContext, useEffect, useState } from "react";
 import dynamic from "next/dynamic";
 
 const Map = dynamic<any>(() => import("../Map").then((mod) => mod.Map), {
@@ -64,46 +64,34 @@ interface SignUpFormProps {
     last_name: string;
     email: string;
     cpf: string;
-    address: string;
+    address: {
+      street: string;
+      neighborhood: string;
+      city: string;
+    };
     state: string;
     city: string;
     available: boolean;
     cellphone: string;
   };
+  onSubmit: SubmitHandler<SignUpFormData>;
 }
 
-export const SignUpForm = ({ labelColor, fillForm }: SignUpFormProps) => {
-  const { signIn } = useContext(AuthContext);
-
+export const SignUpForm = ({
+  labelColor,
+  fillForm,
+  onSubmit,
+}: SignUpFormProps) => {
   const { register, handleSubmit, formState } = useForm({
     resolver: yupResolver(signUpFormSchema),
   });
 
   const { isOpen, onOpen, onClose } = useDisclosure();
 
-  const { position } = useContext(MapContext);
-
   const router = useRouter();
 
-  const handleSignUp: SubmitHandler<SignUpFormData> = async (values) => {
-    try {
-      const { confirm_password, ...rest } = values;
-
-      const { email, password } = rest;
-
-      const { data } = await api.post("/users", {
-        ...rest,
-        lat: position.lat,
-        long: position.long,
-      });
-
-      toast("Usuário criado com sucesso!");
-      await signIn({ email, password });
-    } catch (error: any) {
-      console.log(error.response);
-      toast(`${error.response.status} - ${error.response.data.msg}`);
-    }
-  };
+  const [street, setStreet] = useState("");
+  const [neighborhood, setNeighborhood] = useState("");
 
   const { errors } = formState;
 
@@ -113,9 +101,14 @@ export const SignUpForm = ({ labelColor, fillForm }: SignUpFormProps) => {
     }
   }, [errors]);
 
+  useEffect(() => {
+    setStreet(fillForm?.address?.street || "");
+    setNeighborhood(fillForm?.address?.neighborhood || "");
+  }, [fillForm]);
+
   return (
     <>
-      <VStack as="form" spacing="20" onSubmit={handleSubmit(handleSignUp)}>
+      <VStack as="form" spacing="20" onSubmit={handleSubmit(onSubmit)}>
         <FormControl as="fieldset">
           <FormLabel
             color={labelColor}
@@ -133,12 +126,12 @@ export const SignUpForm = ({ labelColor, fillForm }: SignUpFormProps) => {
               </FormLabel>
               <Input
                 color={labelColor}
-                value={fillForm?.first_name}
+                defaultValue={fillForm?.first_name}
                 id="first_name"
                 variant="flushed"
                 type="text"
                 errorBorderColor="red.300"
-                {...register("first_name")}
+                {...register("first_name", { value: fillForm?.first_name })}
               />
             </FormControl>
             <FormControl>
@@ -147,11 +140,11 @@ export const SignUpForm = ({ labelColor, fillForm }: SignUpFormProps) => {
               </FormLabel>
               <Input
                 color={labelColor}
-                value={fillForm?.last_name}
+                defaultValue={fillForm?.last_name}
                 id="last_name"
                 variant="flushed"
                 type="text"
-                {...register("last_name")}
+                {...register("last_name", { value: fillForm?.last_name })}
               />
             </FormControl>
           </HStack>
@@ -161,11 +154,11 @@ export const SignUpForm = ({ labelColor, fillForm }: SignUpFormProps) => {
             </FormLabel>
             <Input
               color={labelColor}
-              value={fillForm?.email}
+              defaultValue={fillForm?.email}
               id="email"
               variant="flushed"
               type="text"
-              {...register("email")}
+              {...register("email", { value: fillForm?.email })}
             />
           </FormControl>
           <HStack mt={8}>
@@ -175,10 +168,10 @@ export const SignUpForm = ({ labelColor, fillForm }: SignUpFormProps) => {
               </FormLabel>
               <Input
                 color={labelColor}
-                value={fillForm?.cellphone}
+                defaultValue={fillForm?.cellphone}
                 id="cellphone"
                 variant="flushed"
-                {...register("cellphone")}
+                {...register("cellphone", { value: fillForm?.cellphone })}
               />
             </FormControl>
             <FormControl>
@@ -187,11 +180,11 @@ export const SignUpForm = ({ labelColor, fillForm }: SignUpFormProps) => {
               </FormLabel>
               <Input
                 color={labelColor}
-                value={fillForm?.cpf}
+                defaultValue={fillForm?.cpf}
                 id="cpf"
                 variant="flushed"
                 type="text"
-                {...register("cpf")}
+                {...register("cpf", { value: fillForm?.cpf })}
               />
             </FormControl>
           </HStack>
@@ -242,11 +235,14 @@ export const SignUpForm = ({ labelColor, fillForm }: SignUpFormProps) => {
             </FormLabel>
             <Input
               color={labelColor}
-              value={fillForm?.address}
+              defaultValue={""}
               id="address"
               variant="flushed"
+              placeholder="Ex: Rua 7 de Setembro 777, Centro"
               type="text"
-              {...register("address")}
+              {...register("address", {
+                value:`${street}, ${neighborhood}`,
+              })}
             />
           </FormControl>
           <HStack mt={8}>
@@ -256,11 +252,11 @@ export const SignUpForm = ({ labelColor, fillForm }: SignUpFormProps) => {
               </FormLabel>
               <Input
                 color={labelColor}
-                value={fillForm?.city}
+                defaultValue={fillForm?.city}
                 id="city"
                 variant="flushed"
                 type="text"
-                {...register("city")}
+                {...register("city", { value: fillForm?.city })}
               />
             </FormControl>
             <FormControl>
@@ -269,11 +265,11 @@ export const SignUpForm = ({ labelColor, fillForm }: SignUpFormProps) => {
               </FormLabel>
               <Input
                 color={labelColor}
-                value={fillForm?.state}
+                defaultValue={fillForm?.state}
                 id="state"
                 variant="flushed"
                 type="text"
-                {...register("state")}
+                {...register("state", { value: fillForm?.state })}
               />
             </FormControl>
           </HStack>
@@ -295,7 +291,7 @@ export const SignUpForm = ({ labelColor, fillForm }: SignUpFormProps) => {
             colorScheme="pink"
             id="available"
             isChecked={fillForm?.available}
-            {...register("available")}
+            {...register("available", { value: fillForm?.available })}
           />
         </FormControl>
 
