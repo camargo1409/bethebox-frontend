@@ -121,7 +121,14 @@ export const RequestModal = () => {
                 </Tr>
                 <Tr>
                   <Th>Endereço</Th>
-                  <Td>{user?.address}</Td>
+                  <Td>
+                    {!!user?.addresses?.length && (
+                      <>
+                        {user?.addresses[0]?.street || ""},
+                        {user?.addresses[0]?.neighborhood || ""}
+                      </>
+                    )}
+                  </Td>
                 </Tr>
                 <Tr>
                   <Th>Celular</Th>

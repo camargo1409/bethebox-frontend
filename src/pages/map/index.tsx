@@ -35,7 +35,11 @@ interface UserNear {
   cpf: string;
 
   available: boolean;
-  address: string;
+  addresses: {
+    street: string;
+    neighborhood: string;
+    city: string;
+  }[];
   city: string;
   state: string;
   cellphone: string;
@@ -64,6 +68,7 @@ const MapPage = () => {
     api
       .get("/search", { params: { distance } })
       .then(({ data }) => {
+        console.log(data)
         setUsersNearMe(data);
       })
       .catch((err) => {
@@ -146,7 +151,7 @@ const MapPage = () => {
                         {user.city}
                       </Box>
 
-                      <Text mt="2">{user.address}</Text>
+                      <Text mt="2">{user?.addresses[0]?.street || ""}, {user?.addresses[0]?.neighborhood || ""}</Text>
                     </Box>
                   </React.Fragment>
                 ))}
