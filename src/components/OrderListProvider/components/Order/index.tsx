@@ -24,11 +24,15 @@ interface OrderProps {
     has_arrived: boolean;
     updated_at: string;
     customer: {
-      first_name: string,
-      last_name: string,
-      address: string,
-      city: string
-    }
+      first_name: string;
+      last_name: string;
+      addresses: {
+        street: string;
+        neighborhood: string;
+        city: string;
+      }[];
+      city: string;
+    };
   };
 }
 
@@ -39,7 +43,7 @@ export const Order = ({ request }: OrderProps) => {
 
   const { isOpen, onOpen, onClose } = useDisclosure();
   console.log(request);
-  
+
   const getStatus = () => {
     if (request?.has_arrived) {
       return "Item finalizado!";
@@ -100,16 +104,20 @@ export const Order = ({ request }: OrderProps) => {
         <Heading fontSize="lg">{request?.title}</Heading>
         <Text mt={2}>{request?.address}</Text>
         <Text mt={2}>
-          <strong>Cliente: </strong>{request?.customer.first_name} {request?.customer.last_name}
+          <strong>Cliente: </strong>
+          {request?.customer.first_name} {request?.customer.last_name}
         </Text>
         <Text mt={2}>
           <strong>Celular: </strong>(17) 99138-8001
         </Text>
         <Text mt={2}>
-          <strong>Endereço: </strong>{request?.customer.address}
+          <strong>Endereço: </strong>
+          {request?.customer?.addresses[0].street},
+          {request?.customer?.addresses[0].neighborhood}
         </Text>
         <Text mt={2}>
-          <strong>Cidade: </strong>{request?.customer.city}
+          <strong>Cidade: </strong>
+          {request?.customer.city}
         </Text>
         <Text mt={2}>
           <strong>Situação:</strong>
@@ -142,7 +150,7 @@ export const Order = ({ request }: OrderProps) => {
               </Button>
             </>
           )}
-          {(request?.customer_confirmed && !request?.has_arrived) ? (
+          {request?.customer_confirmed && !request?.has_arrived ? (
             <Button
               colorScheme="pink"
               mt={2}

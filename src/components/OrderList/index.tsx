@@ -86,7 +86,7 @@ function Feature({ request }: any) {
           <strong>Celular: </strong>(17) 99126-7046
         </Text>
         <Text mt={2}>
-          <strong>Endereço: </strong>{request?.provider.address}
+          <strong>Endereço: </strong>{request?.provider?.addresses[0]?.street}, {request?.provider?.addresses[0]?.neighborhood}
         </Text>
         <Text mt={2}>
           <strong>Cidade: </strong>{request?.provider.city}

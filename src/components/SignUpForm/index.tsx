@@ -235,14 +235,16 @@ export const SignUpForm = ({
             </FormLabel>
             <Input
               color={labelColor}
-              defaultValue={""}
+              defaultValue={
+                !(street || neighborhood)
+                  ? ""
+                  : `${street}, ${neighborhood}`
+              }
               id="address"
               variant="flushed"
               placeholder="Ex: Rua 7 de Setembro 777, Centro"
               type="text"
-              {...register("address", {
-                value:`${street}, ${neighborhood}`,
-              })}
+              {...register("address")}
             />
           </FormControl>
           <HStack mt={8}>

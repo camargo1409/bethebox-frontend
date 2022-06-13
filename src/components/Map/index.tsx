@@ -4,10 +4,7 @@ import { MapContainer, Marker, Popup, TileLayer } from "react-leaflet";
 import { MapContext } from "../../contexts/MapContenxt";
 import { DraggableMarker } from "../DraggableMarker";
 
-import {
-  Flex,
-  Text,
-} from "@chakra-ui/layout";
+import { Flex, Text } from "@chakra-ui/layout";
 
 import styles from "./index.module.css";
 import { Button } from "@chakra-ui/react";
@@ -18,7 +15,11 @@ export interface UserNearMeData {
   last_name: string;
   email: string;
   cpf: string;
-  address: string;
+  addresses: {
+    street: string;
+    neighborhood: string;
+    city: string;
+  }[];
   state: string;
   city: string;
   lat: number;
@@ -73,7 +74,7 @@ export const Map = ({ isDraggable = true, usersNearMe = null }: MapProps) => {
             }}
           >
             <Popup minWidth={90}>
-              <Text fontSize="sm">My Address</Text>
+              <Text fontSize="sm">Meu endereço</Text>
             </Popup>
           </Marker>
         )}
