@@ -10,11 +10,15 @@ import {
   Input,
   ModalFooter,
   Button,
+  Text,
+  FormControl,
+  FormLabel,
 } from "@chakra-ui/react";
 import React, { useContext, useState } from "react";
 import { toast } from "react-toastify";
 import { api } from "../../../../config/axios";
 import { RequestContext } from "../../../../contexts/RequestContext";
+import { WeekDayPicker } from "../../../WeekDayPicker";
 
 interface AcceptOrderModalProps {
   id: number;
@@ -28,12 +32,14 @@ export const AcceptOrderModal = ({
   onClose,
 }: AcceptOrderModalProps) => {
   const [price, setPrice] = useState(0);
+  const [times, setTimes] = useState<any>({});
   const { getRequests } = useContext(RequestContext);
 
   const accept = async (id: any) => {
     try {
       const res = await api.put(`/requests/${id}?action=accept`, {
         service_price: price,
+        provider_availability: times,
       });
       toast("A proposta foi enviada ao cliente");
       getRequests();
@@ -43,6 +49,10 @@ export const AcceptOrderModal = ({
         type: "error",
       });
     }
+  };
+
+  const handleTime = (data: any) => {
+    setTimes(data);
   };
 
   return (
@@ -71,6 +81,11 @@ export const AcceptOrderModal = ({
               onChange={(e) => setPrice(+e.target.value)}
             />
           </InputGroup>
+
+          <FormControl mt={4}>
+            <FormLabel>Horários Disponíveis</FormLabel>
+            <WeekDayPicker onChange={handleTime} />
+          </FormControl>
         </ModalBody>
 
         <ModalFooter>

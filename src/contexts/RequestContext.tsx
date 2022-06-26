@@ -52,6 +52,7 @@ export const RequestProvider = ({ children }: RequestProviderProps) => {
       },
     });
 
+    console.log(asCustomer)
     setRequests({ asCustomer, asProvider });
   };
 
