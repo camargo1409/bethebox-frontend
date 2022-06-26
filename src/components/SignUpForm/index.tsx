@@ -236,9 +236,7 @@ export const SignUpForm = ({
             <Input
               color={labelColor}
               defaultValue={
-                !(street || neighborhood)
-                  ? ""
-                  : `${street}, ${neighborhood}`
+                !(street || neighborhood) ? "" : `${street}, ${neighborhood}`
               }
               id="address"
               variant="flushed"
